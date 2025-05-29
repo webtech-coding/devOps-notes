@@ -1,0 +1,55 @@
+services:
+  mongo:
+      image: mongo
+      container_name: mongodb
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: example
+      volumes:
+        - mongodata:/data/db
+      ports:
+        - 27017:27017
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      # mongodb refers to the mongodb container in the mongo service
+      ME_CONFIG_MONGODB_URL: mongodb://admin:example@mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - mongo
+  backend:
+    container_name: backend_vm
+    # build from the Dockerfile from the project ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - backend-data:/app
+      - ./backend:/app
+    # read any environment vars from the file
+    env_file:
+      - ./backend/.env
+    ports:
+      - 80:80
+    depends_on:
+    # run the container only when the mongodb container is run successfully
+      - mongo
+  front-end:
+    container_name: frontend_vm
+    #image: imageName/link, if the image comes from cloud service
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+    #run this container only when the backend container is ready.
+      - backend
+#regsiter all the volumes used in the services
+volumes:
+  mongodata:
+  backend-data:
