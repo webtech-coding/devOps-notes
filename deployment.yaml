@@ -1,0 +1,19 @@
+apiVersion: apps/v1 #version of the deployed API
+kind: Deployment # Pod | Deployment | Service
+metadata:
+  name: backend-depl # name for the deployment
+spec:
+  replicas: 2 # How many replicas of the pod/container to create fr
+  selector: # Control the containers with the labels that matches
+    matchLabels:
+      app: backend-deployment
+  template: # container configuration
+    metadata:
+      labels:
+      app: backend-deployment
+    spec:
+      containers:
+        name: backend-depl-vm
+        image: backend-depl-image
+        imagePulPolicy: Never
+    

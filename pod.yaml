@@ -1,0 +1,9 @@
+apiVersion: v1 #version of the POD
+kind: Pod #Pod | Service | Deployment
+metadata:
+  name: backend-Pod # name fot the pod
+spec:
+  containers:
+    name: backedn-pod-vm #name of the pod/container
+    image: backedn-pod-image #image- either local build image or from the hub
+    imagePulPolicy: Never #indicates never to fetch from hub - only uses locally build image
